@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 #include "parameters.h"
 
 using namespace std;
@@ -19,18 +20,45 @@ std::string trim(const std::string &s) {
 
 typedef struct {
     int data;
-} data_element;
+} asmData;
 
 typedef struct {
+    string instructionName;
     asmType instruction;
     int a;
     int b;
-    int immediate;
-} text_element;
+} asmInstruction;
 
-int main(int argc, char *argv[]) {
+int parseStringAsInt(string stringToParse)
+{
+    string::size_type size;
+    int integerValue;
 
+    if (stringToParse.find("0x") != string::npos) {
+        // this stringToParse is in hex, strip off the first 2 chars which should be 0x
+        integerValue = stoi(&stringToParse[2], nullptr, 16);
+    } else if (stringToParse.find("$") != string::npos) {
+        // this stringToParse is a register, strip off the first char which should be a $
+        integerValue = stoi(&stringToParse[1], &size);
+    } else {
+        try {
+            // treat this stringToParse as a number, parse as is
+            integerValue = stoi(stringToParse, &size);
+        }
+        catch(invalid_argument e) {
+            cerr << "Exception! String: " << stringToParse << " was not a valid hex value, register value, or integer value";
+            exit(1);
+        }
+    }
+
+    return integerValue;
+}
+
+int main(int argc, char *argv[])
+{
     map<string, asmType> asmCollection = initAsmCollection();
+    vector<asmInstruction> programInstructions;
+    vector<asmData> programData;
 
     ifstream infile(argv[1]);
 
@@ -70,27 +98,41 @@ int main(int argc, char *argv[]) {
                             iss.str(std::string());
                         }
                         else {
-                            cout << " SECTION: " << section << " TYPE: ";
+                            if(section == "data") {
+                                int data = parseStringAsInt(token);
+                                asmData curData = (asmData) {
+                                        .data = data
+                                };
+                                programData.push_back(curData);
+                            }
+                            else {
+                                if (asmCollection.find(token) != asmCollection.end()) {
+                                    string curInstructionName = token;
+                                    // get argument A skipping any empty space
+                                    getline(iss, token, ' ');
+                                    while(token.empty() && getline(iss, token, ' '));
+                                    int intArgumentA = parseStringAsInt(token);
 
-                            string::size_type size;
+                                    asmInstruction curInstruction = (asmInstruction) {
+                                            .instruction     = asmCollection[curInstructionName],
+                                            .instructionName = curInstructionName,
+                                            .a               = intArgumentA
+                                    };
 
-                            if (asmCollection.find(token) != asmCollection.end()) {
-                                // cout << " " << asmCollection[token].code;
-                                cout <<  "instruction";
-                            } else if (token.find("0x") != string::npos) {
-                                // this token is in hex, strip off the first 2 chars which should be 0x
-                                cout << "hex VALUE: " << stoi(&token[2], nullptr, 16);
-                            } else if (token.find("$") != string::npos) {
-                                // this token is a register, strip off the first char which should be a $
-                                cout << "reg VALUE: " << stoi(&token[1], &size);
-                            } else {
-                                try {
-                                    // treat this token as a number, parse as is
-                                    cout << "int VALUE: " << stoi(token, &size);
+                                    if(asmCollection[curInstructionName].arguments == 2) {
+                                        // get argument B
+                                        getline(iss, token, ' ');
+                                        while(token.empty() && getline(iss, token, ' '));
+                                        int intArgumentB = parseStringAsInt(token);
+
+                                        // then add the second argument to the instruction
+                                        curInstruction.b = intArgumentB;
+                                    }
+
+                                    programInstructions.push_back(curInstruction);
                                 }
-                                catch(invalid_argument e) {
-                                    cout << endl << endl << "Exception! Token: " << token << " was not a valid instruction, hex value, register value, or integer value";
-                                    exit(1);
+                                else {
+                                    throw invalid_argument("Invalid assembly instruction found: "+token);
                                 }
                             }
                         }

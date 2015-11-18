@@ -13,8 +13,9 @@ enum instructionType {
 
 typedef struct {
     instructionType type;
-    std::string code;
-    std::string extCode;
+    std::string     code;
+    std::string     extCode;
+    int             arguments;
 } asmType;
 
 std::map<std::string, asmType> initAsmCollection() {
@@ -22,129 +23,151 @@ std::map<std::string, asmType> initAsmCollection() {
     std::map<std::string, asmType> asmCollection;
 
     asmCollection["NOOP"] = (asmType) {
-            .type    = NOOP,
-            .code    = "0000",
-            .extCode = "0000"
+            .type      = NOOP,
+            .code      = "0000",
+            .extCode   = "0000",
+            .arguments = 0
     };
 
     asmCollection["AND"] = (asmType) {
-            .type    = RTYPE,
-            .code    = "0000",
-            .extCode = "0001"
+            .type      = RTYPE,
+            .code      = "0000",
+            .extCode   = "0001",
+            .arguments = 2
     };
 
     asmCollection["OR"] = (asmType) {
-            .type    = RTYPE,
-            .code    = "0000",
-            .extCode = "0010"
+            .type      = RTYPE,
+            .code      = "0000",
+            .extCode   = "0010",
+            .arguments = 2
     };
 
     asmCollection["XOR"] = (asmType) {
-            .type    = RTYPE,
-            .code    = "0000",
-            .extCode = "0011"
+            .type      = RTYPE,
+            .code      = "0000",
+            .extCode   = "0011",
+            .arguments = 2
     };
 
     asmCollection["ADD"] = (asmType) {
-            .type    = RTYPE,
-            .code    = "0000",
-            .extCode = "0101"
+            .type      = RTYPE,
+            .code      = "0000",
+            .extCode   = "0101",
+            .arguments = 2
     };
 
     asmCollection["SUB"] = (asmType) {
-            .type    = RTYPE,
-            .code    = "0000",
-            .extCode = "1001"
+            .type      = RTYPE,
+            .code      = "0000",
+            .extCode   = "1001",
+            .arguments = 2
     };
 
     asmCollection["CMP"] = (asmType) {
-            .type    = RTYPE,
-            .code    = "0000",
-            .extCode = "1011"
+            .type      = RTYPE,
+            .code      = "0000",
+            .extCode   = "1011",
+            .arguments = 2
     };
 
     asmCollection["ADDI"] = (asmType) {
-            .type    = ITYPE,
-            .code    = "0101",
-            .extCode = "0000"
+            .type      = ITYPE,
+            .code      = "0101",
+            .extCode   = "0000",
+            .arguments = 2
     };
 
     asmCollection["LSHIL"] = (asmType) {
-            .type    = ITYPE,
-            .code    = "1000",
-            .extCode = "0000"
+            .type      = ITYPE,
+            .code      = "1000",
+            .extCode   = "0000",
+            .arguments = 2
     };
 
     asmCollection["LSHIR"] = (asmType) {
-            .type    = ITYPE,
-            .code    = "1000",
-            .extCode = "0001"
+            .type      = ITYPE,
+            .code      = "1000",
+            .extCode   = "0001",
+            .arguments = 2
     };
 
     asmCollection["ASHIL"] = (asmType) {
-            .type    = ITYPE,
-            .code    = "1000",
-            .extCode = "0010"
+            .type      = ITYPE,
+            .code      = "1000",
+            .extCode   = "0010",
+            .arguments = 2
     };
 
     asmCollection["ASHIR"] = (asmType) {
-            .type    = ITYPE,
-            .code    = "1000",
-            .extCode = "0011"
+            .type      = ITYPE,
+            .code      = "1000",
+            .extCode   = "0011",
+            .arguments = 2
     };
 
     asmCollection["LSH"] = (asmType) {
-            .type    = RTYPE,
-            .code    = "1000",
-            .extCode = "0100"
+            .type      = RTYPE,
+            .code      = "1000",
+            .extCode   = "0100",
+            .arguments = 2
     };
 
     asmCollection["ASHU"] = (asmType) {
-            .type    = RTYPE,
-            .code    = "1000",
-            .extCode = "0110"
+            .type      = RTYPE,
+            .code      = "1000",
+            .extCode   = "0110",
+            .arguments = 2
     };
 
     asmCollection["SUBI"] = (asmType) {
-            .type    = ITYPE,
-            .code    = "1001",
-            .extCode = "0000"
+            .type      = ITYPE,
+            .code      = "1001",
+            .extCode   = "0000",
+            .arguments = 2
     };
 
     asmCollection["CMPI"] = (asmType) {
-            .type    = ITYPE,
-            .code    = "1011",
-            .extCode = "0000"
+            .type      = ITYPE,
+            .code      = "1011",
+            .extCode   = "0000",
+            .arguments = 2
     };
 
     asmCollection["SETI"] = (asmType) {
-            .type    = ITYPE,
-            .code    = "1010",
-            .extCode = "0000"
+            .type      = ITYPE,
+            .code      = "1010",
+            .extCode   = "0000",
+            .arguments = 2
     };
 
     asmCollection["JMP"] = (asmType) {
-            .type    = JTYPE,
-            .code    = "0100",
-            .extCode = "0000"
+            .type      = JTYPE,
+            .code      = "0100",
+            .extCode   = "0000",
+            .arguments = 1
     };
 
     asmCollection["LOAD"] = (asmType) {
-            .type    = MTYPE,
-            .code    = "0001",
-            .extCode = "0000"
+            .type      = MTYPE,
+            .code      = "0001",
+            .extCode   = "0000",
+            .arguments = 2
     };
 
     asmCollection["STOR"] = (asmType) {
-            .type    = MTYPE,
-            .code    = "0010",
-            .extCode = "0000"
+            .type      = MTYPE,
+            .code      = "0010",
+            .extCode   = "0000",
+            .arguments = 2
+
     };
 
     asmCollection["WAIT"] = (asmType) {
-            .type    = WTYPE,
-            .code    = "0011",
-            .extCode = "0000"
+            .type      = WTYPE,
+            .code      = "0011",
+            .extCode   = "0000",
+            .arguments = 1
     };
 
     return asmCollection;
