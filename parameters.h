@@ -8,7 +8,15 @@
 #include <map>
 
 enum instructionType {
-    NOOP, RTYPE, ITYPE, JTYPE, WTYPE /* wait type */, MTYPE /* memory type */
+    NOOP,
+    RTYPE,
+    ITYPE,
+    JTYPE,
+    WTYPE /* wait type */,
+    MTYPE /* memory type */,
+    WLSWTYPE /* wireless write type */,
+    WLSRTYPE /* wireless read type */,
+    WLSREGTYPE /* wireless write from reg type */
 };
 
 typedef struct {
@@ -167,6 +175,27 @@ std::map<std::string, asmType> initAsmCollection() {
             .type      = WTYPE,
             .code      = "0011",
             .extCode   = "0000",
+            .arguments = 1
+    };
+
+    asmCollection["WLSW"] = (asmType) {
+            .type      = WLSWTYPE,
+            .code      = "0110",
+            .extCode   = "0000",
+            .arguments = 1
+    };
+
+    asmCollection["WLSR"] = (asmType) {
+            .type      = WLSRTYPE,
+            .code      = "0110",
+            .extCode   = "0001",
+            .arguments = 1
+    };
+
+    asmCollection["WLSREG"] = (asmType) {
+            .type      = WLSREGTYPE,
+            .code      = "0110",
+            .extCode   = "0010",
             .arguments = 1
     };
 

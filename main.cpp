@@ -105,7 +105,7 @@ void writeMemFile(string asmFileName, vector<asmData> &programData, vector<asmIn
 
     // Leave some place in the memory for the screen glyphs
     for (int i = 0; i < 1020; i++) {
-        memFile << "@" << curDataPos << " 0000_0000_0000_0000" << endl;
+        memFile << "@" << setw(4) << curDataPos << " 0000_0000_0000_0000" << endl;
         curDataPos++;
     }
 
@@ -162,6 +162,21 @@ void writeMemFile(string asmFileName, vector<asmData> &programData, vector<asmIn
             memFile << setw(4) << bitset<4>((instruction.a >> 4) & 0xF) << "_";
             memFile << setw(4) << bitset<4>(instruction.a & 0xF);
         }
+        else if(instruction.instruction.type == WLSWTYPE) {
+            memFile << instruction.instruction.extCode << "_";
+            memFile << setw(4) << bitset<4>((instruction.a >> 4) & 0xF) << "_";
+            memFile << setw(4) << bitset<4>(instruction.a & 0xF);
+        }
+        else if(instruction.instruction.type == WLSRTYPE) {
+            memFile << instruction.instruction.extCode << "_";
+            memFile << "0000_";
+            memFile << setw(4) << bitset<4>(instruction.a);
+        }
+        else if(instruction.instruction.type == WLSREGTYPE) {
+            memFile << instruction.instruction.extCode << "_";
+            memFile << "0000_";
+            memFile << setw(4) << bitset<4>(instruction.a);
+        }
 
         // Add a comment so debugging is easier
         memFile << " // " << instruction.instructionName << " ";
@@ -210,7 +225,6 @@ int main(int argc, char *argv[]) {
                     token = trim(token);
 
                     if (!token.empty()) {
-                        cout << "|" << token << "|";
                         if (token[0] == '.') {
                             // if token starts with a . then we are changing sections
                             section = token.substr(1);
@@ -269,8 +283,6 @@ int main(int argc, char *argv[]) {
                                 }
                             }
                         }
-
-                        cout << endl;
                     }
                 }
 
@@ -279,7 +291,7 @@ int main(int argc, char *argv[]) {
         }
 
     } else {
-        cout << "File does not exist" << endl;
+        throw invalid_argument("File does not exist " + string(argv[1]));
     }
 
     // we are done reading in the asm file
