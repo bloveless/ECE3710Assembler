@@ -1,5 +1,5 @@
 .data
-    1
+    @file character_memory.txt
 
 .text
 // Whole line comment
