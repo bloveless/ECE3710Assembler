@@ -30,11 +30,15 @@ typedef struct {
     int b;
     string aText;
     string bText;
+    string aLabel;
+    string bLabel;
+    string lineLabel;
 } asmInstruction;
 
 asmInstruction parseStringAsArgument(asmInstruction &curInstruction, string stringToParse) {
     string::size_type size;
     int integerValue;
+    int foundLabel = 0;
 
     if (stringToParse.find("0x") != string::npos) {
         // this stringToParse is in hex, strip off the first 2 chars which should be 0x
@@ -42,6 +46,8 @@ asmInstruction parseStringAsArgument(asmInstruction &curInstruction, string stri
     } else if (stringToParse.find("$") != string::npos) {
         // this stringToParse is a register, strip off the first char which should be a $
         integerValue = stoi(&stringToParse[1], &size);
+    } else if(stringToParse[0] == ':') {
+        foundLabel = 1;
     } else {
         try {
             // treat this stringToParse as a number, parse as is
@@ -56,13 +62,25 @@ asmInstruction parseStringAsArgument(asmInstruction &curInstruction, string stri
 
     // if aText doesn't exist then populate a
     if (curInstruction.aText.empty()) {
-        curInstruction.a     = integerValue;
-        curInstruction.aText = stringToParse;
+        if(!foundLabel) {
+            curInstruction.a = integerValue;
+            curInstruction.aText = stringToParse;
+        }
+        else {
+            curInstruction.aText = stringToParse;
+            curInstruction.aLabel = stringToParse;
+        }
     }
     else {
         // otherwise, populate b
-        curInstruction.b     = integerValue;
-        curInstruction.bText = stringToParse;
+        if(!foundLabel) {
+            curInstruction.b = integerValue;
+            curInstruction.bText = stringToParse;
+        }
+        else {
+            curInstruction.bText = stringToParse;
+            curInstruction.bLabel = stringToParse;
+        }
     }
 
     return curInstruction;
@@ -132,6 +150,41 @@ void writeMemFile(string asmFileName, vector<asmData> &programData, vector<asmIn
 
         memFile << "@" << std::hex << setw(4) << std::uppercase << instructionLine << " ";
 
+        if(!instruction.aLabel.empty()) {
+
+            // find where a should point to
+            // and set a
+
+            int aPos = 0;
+
+            for(auto &tmpInstruction : programInstructions) {
+                if(tmpInstruction.lineLabel == instruction.aLabel) {
+                    instruction.a = instructionCount - aPos;
+                    break;
+                }
+
+                aPos++;
+            }
+
+        }
+
+        if(!instruction.bLabel.empty()) {
+
+            // find where b should point to
+            // and set b
+
+            int bPos = 0;
+
+            for(auto &tmpInstruction : programInstructions) {
+                if(tmpInstruction.lineLabel == instruction.aLabel) {
+                    instruction.b = instructionCount - bPos;
+                    break;
+                }
+
+                bPos++;
+            }
+        }
+
         // The first instruction code is always present
         memFile << instruction.instruction.code << "_";
 
@@ -140,39 +193,39 @@ void writeMemFile(string asmFileName, vector<asmData> &programData, vector<asmIn
             memFile << setw(4) << instruction.instruction.extCode << "_";
             memFile << setw(4) << bitset<4>(instruction.b);
         }
-        else if(instruction.instruction.type == NOOP) {
+        else if (instruction.instruction.type == NOOP) {
             memFile << "0000_0000_0000";
         }
-        else if(instruction.instruction.type == ITYPE) {
+        else if (instruction.instruction.type == ITYPE) {
             memFile << setw(4) << bitset<4>(instruction.a) << "_";
             memFile << setw(4) << bitset<4>(instruction.b >> 4) << "_";
             memFile << setw(4) << bitset<4>(instruction.b & 0xF);
         }
-        else if(instruction.instruction.type == JTYPE) {
+        else if (instruction.instruction.type == JTYPE) {
             memFile << setw(4) << bitset<4>(instruction.a) << "_";
             memFile << "0000_0000";
         }
-        else if(instruction.instruction.type == MTYPE) {
+        else if (instruction.instruction.type == MTYPE) {
             memFile << setw(4) << bitset<4>(instruction.a) << "_";
             memFile << "0000_";
             memFile << setw(4) << bitset<4>(instruction.b);
         }
-        else if(instruction.instruction.type == WTYPE) {
+        else if (instruction.instruction.type == WTYPE) {
             memFile << setw(4) << bitset<4>((instruction.a >> 8) & 0xF) << "_";
             memFile << setw(4) << bitset<4>((instruction.a >> 4) & 0xF) << "_";
             memFile << setw(4) << bitset<4>(instruction.a & 0xF);
         }
-        else if(instruction.instruction.type == WLSWTYPE) {
+        else if (instruction.instruction.type == WLSWTYPE) {
             memFile << instruction.instruction.extCode << "_";
             memFile << setw(4) << bitset<4>((instruction.a >> 4) & 0xF) << "_";
             memFile << setw(4) << bitset<4>(instruction.a & 0xF);
         }
-        else if(instruction.instruction.type == WLSRTYPE) {
+        else if (instruction.instruction.type == WLSRTYPE) {
             memFile << instruction.instruction.extCode << "_";
             memFile << "0000_";
             memFile << setw(4) << bitset<4>(instruction.a);
         }
-        else if(instruction.instruction.type == WLSREGTYPE) {
+        else if (instruction.instruction.type == WLSREGTYPE) {
             memFile << instruction.instruction.extCode << "_";
             memFile << "0000_";
             memFile << setw(4) << bitset<4>(instruction.a);
@@ -205,6 +258,8 @@ int main(int argc, char *argv[]) {
         stringstream iss;
         string section;
         string line;
+        string label;
+        bool nextInstructionHasLabel = false;
 
         while (getline(infile, line)) {
 
@@ -233,6 +288,10 @@ int main(int argc, char *argv[]) {
                             // if the token is // then we are done with this line, go to the next line
                             // we do this by clearing the stringstream (a.k.a setting it equal to an empty string)
                             iss.str(std::string());
+                        }
+                        else if (token[0] == ':') {
+                            nextInstructionHasLabel = true;
+                            label = token;
                         }
                         else {
                             if (section == "data") {
@@ -264,6 +323,14 @@ int main(int argc, char *argv[]) {
                                             .instruction     = asmCollection[curInstructionName],
                                             .instructionName = curInstructionName
                                     };
+
+                                    if(nextInstructionHasLabel) {
+                                        curInstruction.lineLabel = label;
+
+                                        // reset the label information
+                                        nextInstructionHasLabel = false;
+                                        label = string();
+                                    }
 
                                     // parse the current token as an instruction and populate the a argument
                                     parseStringAsArgument(curInstruction, token);

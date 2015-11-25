@@ -12,6 +12,7 @@ enum instructionType {
     RTYPE,
     ITYPE,
     JTYPE,
+    BTYPE,
     WTYPE /* wait type */,
     MTYPE /* memory type */,
     WLSWTYPE /* wireless write type */,
@@ -196,6 +197,13 @@ std::map<std::string, asmType> initAsmCollection() {
             .type      = WLSREGTYPE,
             .code      = "0110",
             .extCode   = "0010",
+            .arguments = 1
+    };
+
+    asmCollection["BNE"] = (asmType) {
+            .type      = BTYPE,
+            .code      = "1111",
+            .extCode   = "1111",
             .arguments = 1
     };
 
