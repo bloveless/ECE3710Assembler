@@ -1,8 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <vector>
+#include <algorithm>
 #include <iomanip>
+#include <bitset>
+#include <stdexcept>
 #include "parameters.h"
 
 using namespace std;
@@ -36,22 +38,23 @@ typedef struct {
 } asmInstruction;
 
 asmInstruction parseStringAsArgument(asmInstruction &curInstruction, string stringToParse) {
-    string::size_type size;
     int integerValue;
     int foundLabel = 0;
 
     if (stringToParse.find("0x") != string::npos) {
         // this stringToParse is in hex, strip off the first 2 chars which should be 0x
-        integerValue = stoi(&stringToParse[2], nullptr, 16);
+        string subString = stringToParse.substr(2, string::npos);
+        integerValue = atoi(subString.c_str());
     } else if (stringToParse.find("$") != string::npos) {
         // this stringToParse is a register, strip off the first char which should be a $
-        integerValue = stoi(&stringToParse[1], &size);
+        string subString = stringToParse.substr(1, string::npos);
+        integerValue = atoi(subString.c_str());
     } else if(stringToParse[0] == ':') {
         foundLabel = 1;
     } else {
         try {
             // treat this stringToParse as a number, parse as is
-            integerValue = stoi(stringToParse, &size);
+            integerValue = atoi(stringToParse.c_str());
         }
         catch (invalid_argument e) {
             cerr << "Exception! String: " << stringToParse <<
@@ -143,7 +146,7 @@ void writeMemFile(string asmFileName, vector<asmData> &programData, vector<asmIn
     int curInstruction = 1;
 
     // Instructions need to go in the file in reverse order
-    reverse(programInstructions.begin(), programInstructions.end());
+    std::reverse(programInstructions.begin(), programInstructions.end());
     for (auto &instruction : programInstructions) {
 
         int instructionLine = 0x7FFF - instructionCount + curInstruction;
@@ -319,10 +322,9 @@ int main(int argc, char *argv[]) {
                                     getline(iss, token, ' ');
                                     while (token.empty() && getline(iss, token, ' '));
 
-                                    asmInstruction curInstruction = (asmInstruction) {
-                                            .instruction     = asmCollection[curInstructionName],
-                                            .instructionName = curInstructionName
-                                    };
+                                    asmInstruction curInstruction;
+                                    curInstruction.instruction     = asmCollection[curInstructionName];
+                                    curInstruction.instructionName = curInstructionName;
 
                                     if(nextInstructionHasLabel) {
                                         curInstruction.lineLabel = label;
@@ -370,3 +372,4 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+
