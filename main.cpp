@@ -44,7 +44,13 @@ asmInstruction parseStringAsArgument(asmInstruction &curInstruction, string stri
     if (stringToParse.find("0x") != string::npos) {
         // this stringToParse is in hex, strip off the first 2 chars which should be 0x
         string subString = stringToParse.substr(2, string::npos);
-        integerValue = atoi(subString.c_str());
+
+        // let the stream parser parse the hex value
+        stringstream tmpString;
+        tmpString << std::hex << subString;
+
+        // and store it back into the integer
+        tmpString >> integerValue;
     } else if (stringToParse.find("$") != string::npos) {
         // this stringToParse is a register, strip off the first char which should be a $
         string subString = stringToParse.substr(1, string::npos);
