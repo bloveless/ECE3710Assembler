@@ -2,13 +2,57 @@
     @file character_memory.txt
 
 .text
-    WLSW   49
-    WLSW   3
-    WLSW   0
-    WLSW   0
-    WLSR   $1
-    SETI   $14 1
-    OR     $14 1
-    WLSREG $14
-    SETI   $15 8
-    JMP    $15
+    // Wireless initialization
+    WLSW    0x31
+    WLSW    0x02
+    WLSW    0x00
+    WLSW    0x00
+    WLSW    0x20
+    WLSW    0x3B
+    WLSW    0x00
+    WLSW    0x00
+    WLSW    0x20
+    WLSW    0x3B
+    WLSW    0x00
+    WLSW    0x00
+    WLSW    0x20
+    WLSW    0x3B
+    WLSW    0x00
+    WLSW    0x00
+    WLSW    0x20
+    WLSW    0x3B
+    WLSW    0xE2
+    WLSW    0xE1
+    WLSW    0x07
+    WLSW    0x00
+    WLSW    0x27
+    WLSW    0x1E
+    WLSW    0x07
+    WLSW    0x00
+    WLSW    0x27
+    WLSW    0x2E
+    WLSW    0x07
+    WLSW    0x00
+    WLSW    0x27
+    WLSW    0x4E
+    // Send a 1 and receive a two
+    WLSW    0xE1
+    WLSW    0xA0
+    WLSW    0x02
+    WLSW    0x01
+    WLSW    0x00
+    WLSW    0x00
+    WLSW    0x20
+    WLSW    0x3A
+    WLSW    0x00
+    WLSW    0x00
+    WLSW    0x20
+    WLSW    0x3B
+    WLSW    0x61
+    WLSW    0x00
+    WLSW    0x00
+    WLSW    0xE2
+    WLSW    0x07
+    WLSW    0x00
+    WLSW    0x27
+    WLSW    0x6E
