@@ -155,7 +155,7 @@ void writeMemFile(string asmFileName, vector<asmData> &programData, vector<asmIn
     std::reverse(programInstructions.begin(), programInstructions.end());
     for (auto &instruction : programInstructions) {
 
-        int instructionLine = 0x7FFF - instructionCount + curInstruction;
+        int instructionLine = 0x3FFF - instructionCount + curInstruction;
 
         memFile << "@" << std::hex << setw(4) << std::uppercase << instructionLine << " ";
 
