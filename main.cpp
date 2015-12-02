@@ -131,10 +131,12 @@ void writeMemFile(string asmFileName, vector<asmData> &programData, vector<asmIn
     memFile << "// Begin placeholders for LCD memory" << endl;
 
     // Leave some place in the memory for the screen glyphs
+    /*
     for (int i = 0; i < 1020; i++) {
         memFile << "@" << setw(4) << curDataPos << " 0000_0000_0000_0000" << endl;
         curDataPos++;
     }
+     */
 
     memFile << "// Begin Glyphs" << endl;
 
