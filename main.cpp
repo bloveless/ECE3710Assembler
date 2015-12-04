@@ -226,20 +226,10 @@ void writeMemFile(string asmFileName, vector<asmData> &programData, vector<asmIn
             memFile << setw(4) << bitset<4>((instruction.a >> 4) & 0xF) << "_";
             memFile << setw(4) << bitset<4>(instruction.a & 0xF);
         }
-        else if (instruction.instruction.type == WLSWTYPE) {
+        else if (instruction.instruction.type == WLSTYPE) {
             memFile << instruction.instruction.extCode << "_";
             memFile << setw(4) << bitset<4>((instruction.a >> 4) & 0xF) << "_";
             memFile << setw(4) << bitset<4>(instruction.a & 0xF);
-        }
-        else if (instruction.instruction.type == WLSRTYPE) {
-            memFile << instruction.instruction.extCode << "_";
-            memFile << "0000_";
-            memFile << setw(4) << bitset<4>(instruction.a);
-        }
-        else if (instruction.instruction.type == WLSREGTYPE) {
-            memFile << instruction.instruction.extCode << "_";
-            memFile << "0000_";
-            memFile << setw(4) << bitset<4>(instruction.a);
         }
 
         // Add a comment so debugging is easier

@@ -15,9 +15,7 @@ enum instructionType {
     BTYPE,
     WTYPE /* wait type */,
     MTYPE /* memory type */,
-    WLSWTYPE /* wireless write type */,
-    WLSRTYPE /* wireless read type */,
-    WLSREGTYPE /* wireless write from reg type */
+    WLSTYPE /* wireless type */,
 };
 
 typedef struct {
@@ -179,24 +177,10 @@ std::map<std::string, asmType> initAsmCollection() {
             .arguments = 1
     };
 
-    asmCollection["WLSW"] = (asmType) {
-            .type      = WLSWTYPE,
-            .code      = "0110",
+    asmCollection["WLS"] = (asmType) {
+            .type      = WLSTYPE,
+            .code      = "1010",
             .extCode   = "0000",
-            .arguments = 1
-    };
-
-    asmCollection["WLSR"] = (asmType) {
-            .type      = WLSRTYPE,
-            .code      = "0110",
-            .extCode   = "0001",
-            .arguments = 1
-    };
-
-    asmCollection["WLSREG"] = (asmType) {
-            .type      = WLSREGTYPE,
-            .code      = "0110",
-            .extCode   = "0010",
             .arguments = 1
     };
 
