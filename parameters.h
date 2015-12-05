@@ -179,7 +179,7 @@ std::map<std::string, asmType> initAsmCollection() {
 
     asmCollection["WLS"] = (asmType) {
             .type      = WLSTYPE,
-            .code      = "1010",
+            .code      = "1111",
             .extCode   = "0000",
             .arguments = 1
     };
