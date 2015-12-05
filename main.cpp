@@ -231,6 +231,12 @@ void writeMemFile(string asmFileName, vector<asmData> &programData, vector<asmIn
             memFile << setw(4) << bitset<4>((instruction.a >> 4) & 0xF) << "_";
             memFile << setw(4) << bitset<4>(instruction.a & 0xF);
         }
+        else if (instruction.instruction.type == BTYPE) {
+            memFile << setw(4) << bitset<4>(instruction.a >> 8) << "_";
+            memFile << setw(4) << bitset<4>((instruction.a >> 4) & 0xF)<< "_";
+            memFile << setw(4) << bitset<4>((instruction.a) & 0xF);
+
+        }
 
         // Add a comment so debugging is easier
         memFile << " // " << instruction.instructionName << " ";
