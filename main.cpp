@@ -170,19 +170,19 @@ void writeMemFile(string asmFileName, vector<asmData> &programData, vector<asmIn
 
             for(auto &tmpInstruction : programInstructions) {
 
+                aPos++;
+
                 if(tmpInstruction.lineLabel == instruction.aLabel) {
 
                     // BTYPE instructions use an offset rather than an absolute value
                     if(instruction.instruction.type == BTYPE) {
-                        instruction.a = curInstruction - aPos - 1;
+                        instruction.a = curInstruction - aPos;
                     } else {
                         instruction.a = instructionCount - aPos;
                     }
 
                     break;
                 }
-
-                aPos++;
             }
 
         }
@@ -198,17 +198,17 @@ void writeMemFile(string asmFileName, vector<asmData> &programData, vector<asmIn
 
                 if(tmpInstruction.lineLabel == instruction.bLabel) {
 
+                    bPos++;
+
                     // BTYPE instructions use an offset rather than an absolute value
                     if(instruction.instruction.type == BTYPE) {
-                        instruction.b = curInstruction - bPos - 1;
+                        instruction.b = curInstruction - bPos;
                     } else {
                         instruction.b = instructionCount - bPos;
                     }
 
                     break;
                 }
-
-                bPos++;
             }
         }
 
