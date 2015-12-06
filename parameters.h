@@ -85,6 +85,8 @@ std::map<std::string, asmType> initAsmCollection() {
             .arguments = 2
     };
 
+    /*
+
     asmCollection["LSHIL"] = (asmType) {
             .type      = ITYPE,
             .code      = "1000",
@@ -113,12 +115,16 @@ std::map<std::string, asmType> initAsmCollection() {
             .arguments = 2
     };
 
+     */
+
     asmCollection["LSH"] = (asmType) {
-            .type      = RTYPE,
+            .type      = ITYPE,
             .code      = "1000",
-            .extCode   = "0100",
+            .extCode   = "0000",
             .arguments = 2
     };
+
+    /*
 
     asmCollection["ASHU"] = (asmType) {
             .type      = RTYPE,
@@ -126,6 +132,8 @@ std::map<std::string, asmType> initAsmCollection() {
             .extCode   = "0110",
             .arguments = 2
     };
+
+     */
 
     asmCollection["SUBI"] = (asmType) {
             .type      = ITYPE,
