@@ -8,6 +8,7 @@
 	SETI $1 0 // bubbler state
 	SETI $2 0 // heater state
 
+
 :begin
 	//compare register 13 to 1, if it is 1, then we branch to the section for pane 2
 	CMPI $13 1
@@ -22,6 +23,7 @@
 	SETI    $15 0x78
 	LSH     $15 8
 	ADDI    $15 0x18
+
 	TCHBRCH :bubbler //NUMBER need to go down to wireless section if touched else proceed
 
 	//upper right button (2)
@@ -132,22 +134,122 @@
 //Button 1 (bubbler on/off) wireless command
 :bubbler_on
 	WLS 1
+
+	//[LETTER N] Need to change blank space or F to letter N
+    //initialize register to holder letter N
+    SETI    $10 0x00
+    LSH     $10 8
+    ADDI    $10 0x17
+
+    //[BLANK SPACE] Need to change F or preserve bank space
+    SETI    $8 0x00
+    LSH     $8 8
+    ADDI    $8 0x24
+
+    //this is the address of Bubbler O[_]_ 260 =261-1
+    //change to N
+    SETI    $9 0x00
+    LSH     $9 8
+    ADDI    $9 0x104
+
+    //this is the address of Bubbler O_[_] 261 =262-1
+    //change to blank space
+    SETI    $11 0x00
+    LSH     $11 8
+    ADDI    $11 0x105
+    //store N at that address 260
+    STOR $10 $9
+    //store _ at that address 261
+    STOR $8 $11
+
 	SETI $12 :begin
 	JMP $12 //jump back to the top of the stackthis is (TOPOFSTACK-C)
 
 :bubbler_off
 	WLS 2
+
+	//Need to change blank space or letter N to letter FF
+	//initialize register to holder letter F
+    SETI    $10 0x00
+    LSH     $10 8
+    ADDI    $10 0x0F
+    //this is the address of Bubbler O[_]_ 260 =261-1
+    SETI    $9 0x00
+    LSH     $9 8
+    ADDI    $9 0x104
+
+    //this is the address of Bubbler O_[_] 261 =262-1
+    SETI    $11 0x00
+    LSH     $11 8
+    ADDI    $11 0x105
+
+    //store F at address 260
+    STOR $10 $11
+
+    //store F at address 261
+    STOR $10 $9
+
 	SETI $12 :begin
 	JMP $12 //jump back to the top of the stackthis is (TOPOFSTACK-C)
 
 :heater_on
 	//Button 2 (heater on/off) wireless command
 	WLS 2
+
+	//[LETTER N] Need to change blank space or F to letter N
+    //initialize register to holder letter N
+    SETI    $10 0x00
+    LSH     $10 8
+    ADDI    $10 0x17
+
+    //[BLANK SPACE] Need to change F or preserve bank space
+    SETI    $8 0x00
+    LSH     $8 8
+    ADDI    $8 0x24
+
+    //this is the address of Bubbler O[_]_ 287 =288-1
+    //change to N
+    SETI    $9 0x00
+    LSH     $9 8
+    ADDI    $9 0x11F
+
+    //this is the address of Bubbler O_[_] 288 =289-1
+    //change to blank space
+    SETI    $11 0x00
+    LSH     $11 8
+    ADDI    $11 0x120
+    //store N at that address 287
+    STOR $10 $9
+    //store _ at that address 288
+    STOR $8 $11
+
 	SETI $12 :begin
 	JMP $12 //jump back to the top of the stackthis is (TOPOFSTACK-C)
 
 :heater_off
 	WLS 3
+
+	//Need to change blank space or letter N to letter FF
+    //initialize register to holder letter F
+     SETI    $10 0x00
+     LSH     $10 8
+     ADDI    $10 0x0F
+     //this is the address of Bubbler O[_]_ 287 =288-1
+     SETI    $9 0x00
+     LSH     $9 8
+     ADDI    $9 0x11F
+
+     //this is the address of Bubbler O_[_] 288 =289-1
+     SETI    $11 0x00
+     LSH     $11 8
+     ADDI    $11 0x120
+
+     //store F at address 288
+     STOR $10 $11
+
+     //store F at address 289
+     STOR $10 $9
+
 	SETI $12 :begin
 	JMP $12 //jump back to the top of the stackthis is (TOPOFSTACK-C)
 
