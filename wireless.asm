@@ -50,6 +50,33 @@
 :bubbler_on
 	SETI $2 1
 	WLS 1
+	//[LETTER N] Need to change blank space or F to letter N
+    //initialize register to holder letter N
+    SETI    $10 0x00
+    LSH     $10 8
+    ADDI    $10 0x17
+
+    //[BLANK SPACE] Need to change F or preserve bank space
+    SETI    $8 0x00
+    LSH     $8 8
+    ADDI    $8 0x24
+
+    //this is the address of Bubbler O[_]_ 260 =261-1
+    //change to N
+    SETI    $9 0x00
+    LSH     $9 8
+    ADDI    $9 0x104
+
+    //this is the address of Bubbler O_[_] 261 =262-1
+    //change to blank space
+    SETI    $11 0x00
+    LSH     $11 8
+    ADDI    $11 0x105
+    //store N at that address 260
+    STOR $10 $9
+    //store _ at that address 261
+    STOR $8 $11
+
 	WAIT 512
 	JMP $0
 
