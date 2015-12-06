@@ -187,14 +187,14 @@ std::map<std::string, asmType> initAsmCollection() {
     asmCollection["BGE"] = (asmType) {
             .type      = BTYPE,
             .code      = "0111",
-            .extCode   = "1111",
+            .extCode   = "0000",
             .arguments = 1
     };
 
     asmCollection["TCHBRCH"] = (asmType) {
             .type      = BTYPE,
-            .code      = "0111",
-            .extCode   = "1111",
+            .code      = "0110",
+            .extCode   = "0000",
             .arguments = 1
     };
 
