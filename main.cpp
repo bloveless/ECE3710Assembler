@@ -178,7 +178,7 @@ void writeMemFile(string asmFileName, vector<asmData> &programData, vector<asmIn
                     if(instruction.instruction.type == BTYPE) {
                         instruction.a = curInstruction - aPos;
                     } else {
-                        instruction.a = instructionCount - aPos;
+                        instruction.a = 0x3FFF - aPos - 1;
                     }
 
                     break;
@@ -204,7 +204,7 @@ void writeMemFile(string asmFileName, vector<asmData> &programData, vector<asmIn
                     if(instruction.instruction.type == BTYPE) {
                         instruction.b = curInstruction - bPos;
                     } else {
-                        instruction.b = instructionCount - bPos;
+                        instruction.b = 0x3FFF - bPos - 1;
                     }
 
                     break;
